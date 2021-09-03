@@ -1,5 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:backdrop/backdrop.dart';
 
 class RandomWords extends StatefulWidget {
   const RandomWords({Key? key}) : super(key: key);
@@ -11,26 +12,30 @@ class RandomWords extends StatefulWidget {
 class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _saved = <WordPair>{};
-  final _biggerFont = const TextStyle(
-    fontSize: 18.0,
-  );
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("MyApp"),
+    return BackdropScaffold(
+      appBar: BackdropAppBar(
+        title: const Text(
+          "MyApp",
+        ),
+        backgroundColor: Colors.black,
+        brightness: Brightness.dark,
       ),
-      body: _buildSuggestions(),
-      drawer: Drawer(
-        child: Container(
-          child: Center(
-            child: ElevatedButton(
-              child: Text("Favourites"),
-              onPressed: _pushSaved,
-            ),
+      frontLayer: _buildSuggestions(),
+      backLayer: Container(
+        alignment: Alignment.topLeft,
+        child: ElevatedButton(
+          child: Text("Favourites"),
+          onPressed: _pushSaved,
+          style: ElevatedButton.styleFrom(
+            primary: Colors.grey,
           ),
         ),
       ),
+      headerHeight: 700,
+      backLayerBackgroundColor: Colors.black,
+      frontLayerBackgroundColor: Colors.black,
     );
   }
 
@@ -54,11 +59,15 @@ class _RandomWordsState extends State<RandomWords> {
     return ListTile(
       title: Text(
         pair.asPascalCase,
-        style: _biggerFont,
+        style: TextStyle(
+          fontSize: 18.0,
+          color: Colors.white,
+          decorationColor: Colors.white,
+        ),
       ),
       trailing: Icon(
         _savedTrue ? Icons.favorite : Icons.favorite_border,
-        color: _savedTrue ? Colors.red : null,
+        color: _savedTrue ? Colors.red : Colors.white,
       ),
       onTap: () {
         setState(() {
@@ -81,7 +90,11 @@ class _RandomWordsState extends State<RandomWords> {
               return ListTile(
                 title: Text(
                   pair.asPascalCase,
-                  style: _biggerFont,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                    decorationColor: Colors.white,
+                  ),
                 ),
               );
             },
@@ -93,8 +106,10 @@ class _RandomWordsState extends State<RandomWords> {
           return Scaffold(
             appBar: AppBar(
               title: Text('Saved Suggestions'),
+              backgroundColor: Colors.black,
             ),
             body: ListView(children: divided),
+            backgroundColor: Colors.black,
           );
         },
       ),
