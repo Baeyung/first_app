@@ -10,6 +10,7 @@ class RandomWords extends StatefulWidget {
 
 class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
+  final _saved = <WordPair>{};
   final _biggerFont = const TextStyle(
     fontSize: 18.0,
   );
@@ -21,7 +22,14 @@ class _RandomWordsState extends State<RandomWords> {
       ),
       body: _buildSuggestions(),
       drawer: Drawer(
-        child: _buildSuggestions(),
+        child: Container(
+          child: Center(
+            child: ElevatedButton(
+              child: Text("Favourites"),
+              onPressed: _pushSaved,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -42,10 +50,53 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
+    final _savedTrue = _saved.contains(pair);
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
+      ),
+      trailing: Icon(
+        _savedTrue ? Icons.favorite : Icons.favorite_border,
+        color: _savedTrue ? Colors.red : null,
+      ),
+      onTap: () {
+        setState(() {
+          if (_savedTrue) {
+            _saved.remove(pair);
+          } else {
+            _saved.add(pair);
+          }
+        });
+      },
+    );
+  }
+
+  void _pushSaved() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          final tiles = _saved.map(
+            (WordPair pair) {
+              return ListTile(
+                title: Text(
+                  pair.asPascalCase,
+                  style: _biggerFont,
+                ),
+              );
+            },
+          );
+          final divided = tiles.isNotEmpty
+              ? ListTile.divideTiles(context: context, tiles: tiles).toList()
+              : <Widget>[];
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Saved Suggestions'),
+            ),
+            body: ListView(children: divided),
+          );
+        },
       ),
     );
   }
