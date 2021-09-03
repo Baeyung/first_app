@@ -17,7 +17,7 @@ class _RandomWordsState extends State<RandomWords> {
     return BackdropScaffold(
       appBar: BackdropAppBar(
         title: const Text(
-          "MyApp",
+          "Random Words Suggestor",
         ),
         backgroundColor: Colors.black,
         brightness: Brightness.dark,
@@ -44,7 +44,9 @@ class _RandomWordsState extends State<RandomWords> {
         padding: const EdgeInsets.all(16),
         itemBuilder: (BuildContext _context, int i) {
           if (i.isOdd) {
-            return Divider();
+            return Divider(
+              color: Colors.grey,
+            );
           }
           final int index = i ~/ 2;
           if (index >= _suggestions.length) {
@@ -96,11 +98,18 @@ class _RandomWordsState extends State<RandomWords> {
                     decorationColor: Colors.white,
                   ),
                 ),
+                onTap: () {
+                  setState(() {
+                    _saved.remove(pair);
+                  });
+                },
               );
             },
           );
           final divided = tiles.isNotEmpty
-              ? ListTile.divideTiles(context: context, tiles: tiles).toList()
+              ? ListTile.divideTiles(
+                      context: context, tiles: tiles, color: Colors.grey)
+                  .toList()
               : <Widget>[];
 
           return Scaffold(
